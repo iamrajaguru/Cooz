@@ -24,29 +24,15 @@ mongoose.connect(
 );
 app.listen(4000, () => console.log("node waiting to request response"));
 
-var myColl = mongoose.model("mycollection", {
+var myCol = mongoose.model("mycollection", {
   item: String
 });
-
-// app.get("/", (req, res) => {
-//   console.log("works");
-//   var myCollObj = new myColl();
-//   myCollObj.name = "raja";
-//   myCollObj.age = 21;
-//   myCollObj.save((err, doc) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log(doc);
-//     }
-//   });
-// });
 
 app.get("/post/:id", (req, res) => {
   console.log("post");
   console.log(req.params.id);
   let a = req.params.id;
-  myColl.find({ item: { $regex: "^" + a } }, (err, docs) => {
+  myCol.find({ item: { $regex: "^"+a, $options: "i" } }, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
@@ -56,10 +42,10 @@ app.get("/post/:id", (req, res) => {
   });
 });
 app.delete("/post/:id", (req, res) => {
-  console.log("post");
+  console.log("post delete");
   console.log(req.params.id);
   let a = req.params.id;
-  myColl.deleteOne({ item: { $regex: "^" + a } }, (err, docs) => {
+  myCol.deleteOne({ item: { $regex: "^" + a } }, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
@@ -71,7 +57,7 @@ app.delete("/post/:id", (req, res) => {
 
 app.delete("/deleteitem", (req, res) => {
   console.log("deleteAll");
-  myColl.remove({}, (err, docs) => {
+  myCol.remove({}, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
@@ -83,12 +69,29 @@ app.delete("/deleteitem", (req, res) => {
 
 app.get("/display", (req, res) => {
   console.log("display");
-  myColl.find({}, (err, docs) => {
+  myCol.find({}, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
       res.send(docs);
       console.log(docs);
+    }
+  });
+});
+app.get("/insert/:value", (req, res) => {
+  console.log("insert");
+  let inst = req.params.value;
+  console.log(inst);
+
+  var myCollObj = new myCol();
+  myCollObj.item = inst;
+
+  myCollObj.save((err, doc) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(doc);
+      console.log(doc);
     }
   });
 });
