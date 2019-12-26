@@ -8,7 +8,6 @@ class MapHoc extends Component {
           <div className="alert alert-success" role="alert" key={k}>
             <p key={k}>
               {v.item}
-              <hr />
             </p>
           </div>
         ))}

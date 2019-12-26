@@ -1,35 +1,32 @@
 import React, { Component } from "react";
 import axios from "axios";
 import MapHoc from "./mapHoc";
-import GridComponent from './gridComponent'
+// import GridComponent from "./gridComponent";
 class CookDash extends Component {
-  state = {
-    userinput: "",
-    obj: [],
-    allitem: [],
-    search: ""
-  };
-  submitHolding = async e => {
-    e.preventDefault();
-    console.log(this.state.userinput);
-    try {
-      let res = await axios.get(
-        `http://localhost:4000/post/${this.state.userinput}`
-      );
-      this.state.obj = res.data;
-      this.setState({ obj: res.data });
-      console.log(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  componentDidMount() {
+    console.log("=================", this.props);
+  }
+
+  // submitHolding = async e => {
+  //   e.preventDefault();
+  //   console.log(this.state.userinput);
+  //   try {
+  //     let res = await axios.get(
+  //       `http://localhost:4000/post/${this.state.userinput}`
+  //     );
+  //     this.state.obj = res.data;
+  //     this.setState({ obj: res.data });
+  //     console.log(res.data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
   delHolding = async e => {
     e.preventDefault();
     try {
       let res = await axios.delete(
         `http://localhost:4000/post/${this.state.userinput}`
       );
-      // this.state.obj=;
       console.log(res.data);
     } catch (err) {
       console.log(err);
@@ -38,7 +35,6 @@ class CookDash extends Component {
   deleteAllItem = async e => {
     try {
       let res = await axios.delete("http://localhost:4000/deleteitem");
-      // this.state.obj=;
       console.log(res.data);
     } catch (err) {
       console.log(err);
@@ -49,7 +45,6 @@ class CookDash extends Component {
     try {
       let res = await axios.get("http://localhost:4000/display");
       this.setState({ allitem: res.data });
-
       console.log(this.state.allitem);
     } catch (err) {
       console.log(err);
@@ -65,12 +60,11 @@ class CookDash extends Component {
       console.log(err);
     }
   };
-  tightsearch = async e => {
-    console.log(e);
-
+  tightsearch = async (e, val) => {
+    console.log(e, val);
     try {
       let res = await axios.get(`http://localhost:4000/post/${e}`);
-      this.setState({ obj: res.data });
+      this.props.updateUserInput("obj", res.data);
       console.log(res.data);
     } catch (e) {
       console.log(e);
@@ -87,7 +81,10 @@ class CookDash extends Component {
                 className="form-control "
                 type="text"
                 id="mytext"
-                onChange={k => this.setState({ userinput: k.target.value })}
+                onChange={k => {
+                  console.log(k.target.value);
+                  this.props.updateUserInput("userinput", k.target.value);
+                }}
                 placeholder="Enter Text"
               />
             </div>
@@ -130,7 +127,7 @@ class CookDash extends Component {
                 type="button"
                 className="like m-1 btn btn-warning"
                 value="Search"
-                onClick={this.submitHolding}
+                onClick={e=>this.props.submitHolding(this.props)}
               />
             </div>
           </div>
@@ -139,7 +136,7 @@ class CookDash extends Component {
         <input
           type="text"
           onChange={e =>
-            e.target.value !== "" && this.tightsearch(e.target.value)
+            e.target.value !== "" && this.tightsearch(e.target.value, "search")
           }
           placeholder="Search"
         />
@@ -147,14 +144,13 @@ class CookDash extends Component {
         <div className="container mt-2 align-items-center ">
           <div className="row">
             <div className="col-md-6">
-              {this.state.obj !== "" && <MapHoc mapValue={this.state.obj} />}
+              {this.props.obj !== "" && <MapHoc mapValue={this.props.obj} />}
             </div>
             <div className="col-md-6">
-              <MapHoc mapValue={this.state.allitem} />
+              <MapHoc mapValue={this.props.allitem} />
             </div>
           </div>
         </div>
-        <GridComponent/>
       </div>
     );
   }

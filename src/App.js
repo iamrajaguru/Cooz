@@ -1,12 +1,15 @@
-import React from 'react';
-import CookDash from './CookFlow/Component/cookdash'
-import './App.css';
-
+import React from "react";
+import CookDash from "./CookFlow/Containers/codedash";
+import "./App.css";
+import { Provider } from "react-redux";
+import store from "./store";
 function App() {
   return (
-    <div className="App">
-  <CookDash/>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <CookDash />
+      </div>
+    </Provider>
   );
 }
 
